@@ -12,6 +12,10 @@ let homeworks: Homework[] = [
     { id: '3', title: 'Learn functions', completed: true },
 ];
 
+export async function fetchHomework(title: string): Promise<Homework[]> {
+    return homeworks.filter((homework) => homework.title.includes(title));
+}
+
 // Fetch de mentiras
 export async function getHomeworks(): Promise<Homework[]> {
     'use cache'
