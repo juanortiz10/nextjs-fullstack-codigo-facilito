@@ -18,6 +18,27 @@ export async function toggleHomework(id: string, completed: boolean) {
     return updated;
 }
 
+export async function editHomework(id: string, title: string) {
+    const homework = getHomeworkByIdLive(id);
+
+    if (!homework) {
+        throw new Error("Tarea no encontrada");
+    }
+
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle) {
+        throw new Error("El título no puede estar vacío");
+    }
+
+    const updated = await updateHomework({ ...homework, title: trimmedTitle });
+
+    updateTag("getHomeworks");
+    updateTag("getHomeworkById");
+
+    return updated;
+}
+
 export async function deleteHomework(id: string) {
     const homework = getHomeworkByIdLive(id);
 

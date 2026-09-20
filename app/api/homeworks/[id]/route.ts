@@ -17,8 +17,10 @@ export async function PATCH(
 
     const completed =
         typeof body?.completed === "boolean" ? body.completed : !homework.completed;
+    const title =
+        typeof body?.title === "string" && body.title.trim() ? body.title.trim() : homework.title;
 
-    const updated = await updateHomework({ ...homework, completed });
+    const updated = await updateHomework({ ...homework, completed, title });
 
     revalidateTag("getHomeworks", { expire: 0 });
     revalidateTag("getHomeworkById", { expire: 0 });

@@ -80,6 +80,15 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
               prev ? prev.filter((homework) => homework.id !== id) : prev
             )
           }
+          onEdit={(id, title) =>
+            setResults((prev) =>
+              prev
+                ? prev.map((homework) =>
+                    homework.id === id ? { ...homework, title } : homework
+                  )
+                : prev
+            )
+          }
         />
       ) : (
         <Suspense
