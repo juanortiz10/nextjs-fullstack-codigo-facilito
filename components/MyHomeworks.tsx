@@ -75,6 +75,11 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
                 : prev
             )
           }
+          onDelete={(id) =>
+            setResults((prev) =>
+              prev ? prev.filter((homework) => homework.id !== id) : prev
+            )
+          }
         />
       ) : (
         <Suspense

@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeworkByIdLive, updateHomework } from "@/lib/data";
+import { deleteHomeWork, getHomeworkByIdLive, updateHomework } from "@/lib/data";
 import { updateTag } from "next/cache";
 
 export async function toggleHomework(id: string, completed: boolean) {
@@ -16,4 +16,19 @@ export async function toggleHomework(id: string, completed: boolean) {
     updateTag("getHomeworkById");
 
     return updated;
+}
+
+export async function deleteHomework(id: string) {
+    const homework = getHomeworkByIdLive(id);
+
+    if (!homework) {
+        throw new Error("Tarea no encontrada");
+    }
+
+    const deleted = await deleteHomeWork(id);
+
+    updateTag("getHomeworks");
+    updateTag("getHomeworkById");
+
+    return deleted;
 }
