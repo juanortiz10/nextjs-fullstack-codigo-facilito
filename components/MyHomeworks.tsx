@@ -64,7 +64,18 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
       {isPending ? (
         <div className="animate-pulse text-sm text-gray-400">Loading...</div>
       ) : results !== null ? (
-        <HomeworkItems homeworks={results} />
+        <HomeworkItems
+          homeworks={results}
+          onToggle={(id, completed) =>
+            setResults((prev) =>
+              prev
+                ? prev.map((homework) =>
+                    homework.id === id ? { ...homework, completed } : homework
+                  )
+                : prev
+            )
+          }
+        />
       ) : (
         <Suspense
           fallback={

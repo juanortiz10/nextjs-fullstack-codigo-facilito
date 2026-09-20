@@ -6,11 +6,20 @@ export type Homework = {
     completed: boolean;
 };
 
-let homeworks: Homework[] = [
-    { id: '1', title: 'Learn next js', completed: false },
-    { id: '2', title: 'Learn Turbopack', completed: false },
-    { id: '3', title: 'Learn functions', completed: true },
-];
+// Distintos boundaries de compilacion (route handlers, server actions,
+// funciones 'use cache') pueden instanciar este modulo por separado.
+// Se guarda el array en globalThis para que todos compartan la misma data.
+const globalStore = globalThis as unknown as { __homeworks?: Homework[] };
+
+if (!globalStore.__homeworks) {
+    globalStore.__homeworks = [
+        { id: '1', title: 'Learn next js', completed: false },
+        { id: '2', title: 'Learn Turbopack', completed: false },
+        { id: '3', title: 'Learn functions', completed: true },
+    ];
+}
+
+let homeworks: Homework[] = globalStore.__homeworks;
 
 export async function fetchHomework(title: string): Promise<Homework[]> {
     return homeworks.filter((homework) => homework.title.includes(title));
@@ -25,6 +34,10 @@ export async function getHomeworks(): Promise<Homework[]> {
     return new Promise((resolve) => {
         setTimeout(() => resolve(homeworks), 2000);
     });
+}
+
+export function getHomeworkByIdLive(id: string): Homework | undefined {
+    return homeworks.find((homework) => homework.id === id);
 }
 
 export async function getHomeworkById(id: string): Promise<Homework> {
@@ -54,6 +67,7 @@ export async function deleteHomeWork(id: string): Promise<boolean> {
     const before = homeworks.length;
     // Mutacion
     homeworks = homeworks.filter((homework) => homework.id !== id);
+    globalStore.__homeworks = homeworks;
 
     return homeworks.length < before;
 }
