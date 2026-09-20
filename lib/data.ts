@@ -38,6 +38,18 @@ export async function getHomeworkById(id: string): Promise<Homework> {
     });
 }
 
+export async function createHomework(title: string): Promise<Homework> {
+    const homework: Homework = {
+        id: crypto.randomUUID(),
+        title,
+        completed: false,
+    };
+
+    homeworks.push(homework);
+
+    return homework;
+}
+
 export async function deleteHomeWork(id: string): Promise<boolean> {
     const before = homeworks.length;
     // Mutacion

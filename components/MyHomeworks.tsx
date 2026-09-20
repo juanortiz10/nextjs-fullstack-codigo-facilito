@@ -8,20 +8,39 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState<Homework[] | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [newTitle, setNewTitle] = useState("");
+  const [isAdding, startAddTransition] = useTransition();
+
+  const refreshResults = async () => {
+    const response = await fetch(
+      `/api/homeworks?title=${encodeURIComponent(searchText)}`
+    );
+    const data: Homework[] = await response.json();
+    setResults(data);
+  };
 
   const handleSearchClick = () => {
-    startTransition(async () => {
-      const response = await fetch(
-        `/api/homeworks?title=${encodeURIComponent(searchText)}`
-      );
-      const data: Homework[] = await response.json();
-      setResults(data);
-    });
+    startTransition(refreshResults);
   };
 
   const handleClearClick = () => {
     setSearchText("");
     setResults(null);
+  };
+
+  const handleAddClick = () => {
+    const title = newTitle.trim();
+    if (!title) return;
+
+    startAddTransition(async () => {
+      await fetch("/api/homeworks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      setNewTitle("");
+      await refreshResults();
+    });
   };
 
   return (
@@ -54,6 +73,25 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
         >
           {children}
         </Suspense>
+      )}
+      {!isPending && (
+        <div className="mt-3 flex items-center gap-3 rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-700">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(event) => setNewTitle(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleAddClick()}
+            placeholder="+ Nueva tarea..."
+            className="flex-1 border-none bg-transparent text-sm text-black outline-none placeholder:text-gray-400 dark:text-white"
+          />
+          <button
+            className="cursor-pointer rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-gray-700 dark:disabled:text-gray-400"
+            disabled={!newTitle.trim().length || isAdding}
+            onClick={handleAddClick}
+          >
+            {isAdding ? "Agregando..." : "Agregar"}
+          </button>
+        </div>
       )}
     </div>
   );
