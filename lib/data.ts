@@ -53,3 +53,23 @@ export async function updateHomework(homeworkUpdated: Homework): Promise<Homewor
 
     return homeworkUpdated; 
 }
+
+export async function getHomeworkByTitle(title: string): Promise<Homework[] | undefined> {
+    return homeworks.filter((homework) => homework.title.toLowerCase().includes(title.toLowerCase()));
+}
+
+export async function createHomework(title: string): Promise<Homework | null> {
+    try {
+        const nextHomework: Homework = {
+            id: crypto.randomUUID(),
+            title,
+            completed: false,
+        };
+
+        homeworks.push(nextHomework);
+        return nextHomework; 
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
