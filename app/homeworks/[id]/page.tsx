@@ -1,4 +1,4 @@
-import { getHomeworkById } from "@/lib/data";
+import { getHomework } from "@/lib/homeworks";
 
 const HomeworkDetail = async ({
   params,
@@ -6,12 +6,12 @@ const HomeworkDetail = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const homework = await getHomeworkById(id);
+  const homework = await getHomework(id);
 
   return (
     <div>
-      <h2>{homework.title}</h2>
-      <span>Completed: {String(homework.completed)}</span>
+      <h2>{homework?.title}</h2>
+      <span>Completed: {String(homework?.completed)}</span>
     </div>
   );
 };

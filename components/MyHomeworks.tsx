@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useTransition, type ReactNode } from "react";
-import type { Homework } from "@/lib/data";
+import type { Homework } from "@/lib/homeworks";
 import HomeworkItems from "@/components/HomeworkItems";
 
 const MyHomeworks = ({ children }: { children: ReactNode }) => {
@@ -13,7 +13,7 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
 
   const refreshResults = async () => {
     const response = await fetch(
-      `/api/homeworks?title=${encodeURIComponent(searchText)}`
+      `/api/homeworks?title=${encodeURIComponent(searchText)}`,
     );
     const data: Homework[] = await response.json();
     setResults(data);
@@ -70,30 +70,32 @@ const MyHomeworks = ({ children }: { children: ReactNode }) => {
             setResults((prev) =>
               prev
                 ? prev.map((homework) =>
-                    homework.id === id ? { ...homework, completed } : homework
+                    homework.id === id ? { ...homework, completed } : homework,
                   )
-                : prev
+                : prev,
             )
           }
           onDelete={(id) =>
             setResults((prev) =>
-              prev ? prev.filter((homework) => homework.id !== id) : prev
+              prev ? prev.filter((homework) => homework.id !== id) : prev,
             )
           }
           onEdit={(id, title) =>
             setResults((prev) =>
               prev
                 ? prev.map((homework) =>
-                    homework.id === id ? { ...homework, title } : homework
+                    homework.id === id ? { ...homework, title } : homework,
                   )
-                : prev
+                : prev,
             )
           }
         />
       ) : (
         <Suspense
           fallback={
-            <div className="animate-pulse text-sm text-gray-400">Loading...</div>
+            <div className="animate-pulse text-sm text-gray-400">
+              Loading...
+            </div>
           }
         >
           {children}

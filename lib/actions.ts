@@ -1,16 +1,16 @@
 "use server";
 
-import { deleteHomeWork, getHomeworkByIdLive, updateHomework } from "@/lib/data";
+import { deleteHomeWork, getHomework, updateHomework } from "@/lib/homeworks";
 import { updateTag } from "next/cache";
 
 export async function toggleHomework(id: string, completed: boolean) {
-    const homework = getHomeworkByIdLive(id);
+    const homework = await getHomework(id);
 
     if (!homework) {
         throw new Error("Tarea no encontrada");
     }
 
-    const updated = await updateHomework({ ...homework, completed });
+    const updated = await updateHomework(homework.id, { completed });
 
     updateTag("getHomeworks");
     updateTag("getHomeworkById");
@@ -19,7 +19,7 @@ export async function toggleHomework(id: string, completed: boolean) {
 }
 
 export async function editHomework(id: string, title: string) {
-    const homework = getHomeworkByIdLive(id);
+    const homework = await getHomework(id);
 
     if (!homework) {
         throw new Error("Tarea no encontrada");
@@ -31,7 +31,7 @@ export async function editHomework(id: string, title: string) {
         throw new Error("El título no puede estar vacío");
     }
 
-    const updated = await updateHomework({ ...homework, title: trimmedTitle });
+    const updated = await updateHomework(homework.id, { title: trimmedTitle });
 
     updateTag("getHomeworks");
     updateTag("getHomeworkById");
@@ -40,7 +40,7 @@ export async function editHomework(id: string, title: string) {
 }
 
 export async function deleteHomework(id: string) {
-    const homework = getHomeworkByIdLive(id);
+    const homework = await getHomework(id);
 
     if (!homework) {
         throw new Error("Tarea no encontrada");

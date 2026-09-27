@@ -1,4 +1,5 @@
-import { deleteHomeWork, getHomeworkByIdLive, updateHomework } from "@/lib/data";
+import { getHomeworkById } from "@/lib/data";
+import { deleteHomeWork, updateHomework, getHomework } from "@/lib/homeworks";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 
@@ -9,7 +10,7 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    const homework = getHomeworkByIdLive(id);
+    const homework = await getHomework(id);
 
     if (!homework) {
         return Response.json({ error: "Tarea no encontrada" }, { status: 404 });
@@ -20,7 +21,7 @@ export async function PATCH(
     const title =
         typeof body?.title === "string" && body.title.trim() ? body.title.trim() : homework.title;
 
-    const updated = await updateHomework({ ...homework, completed, title });
+    const updated = await updateHomework(homework.id, { completed, title });
 
     revalidateTag("getHomeworks", { expire: 0 });
     revalidateTag("getHomeworkById", { expire: 0 });
@@ -35,7 +36,7 @@ export async function DELETE(
 ) {
     const { id } = await params;
 
-    const homework = getHomeworkByIdLive(id);
+    const homework = await getHomeworkById(id);
 
     if (!homework) {
         return Response.json({ error: "Tarea no encontrada" }, { status: 404 });

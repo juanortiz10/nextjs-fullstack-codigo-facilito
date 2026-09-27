@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import type { Homework } from "@/lib/data";
+import type { Homework } from "@/lib/homeworks";
 import { deleteHomework, editHomework, toggleHomework } from "@/lib/actions";
 
 const HomeworkItems = ({
@@ -34,7 +34,9 @@ const HomeworkItems = ({
     const completed = !homework.completed;
 
     setItems((prev) =>
-      prev.map((item) => (item.id === homework.id ? { ...item, completed } : item))
+      prev.map((item) =>
+        item.id === homework.id ? { ...item, completed } : item,
+      ),
     );
 
     startTransition(async () => {
@@ -67,7 +69,7 @@ const HomeworkItems = ({
     }
 
     setItems((prev) =>
-      prev.map((item) => (item.id === homework.id ? { ...item, title } : item))
+      prev.map((item) => (item.id === homework.id ? { ...item, title } : item)),
     );
     setEditingId(null);
 
@@ -120,7 +122,9 @@ const HomeworkItems = ({
           ) : (
             <span
               className={`text-sm font-medium text-gray-800 transition-colors dark:text-gray-100 ${
-                homework.completed ? "text-gray-400 line-through dark:text-gray-500" : ""
+                homework.completed
+                  ? "text-gray-400 line-through dark:text-gray-500"
+                  : ""
               }`}
             >
               {homework.title}

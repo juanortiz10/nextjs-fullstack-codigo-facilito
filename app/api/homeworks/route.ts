@@ -1,12 +1,11 @@
-import { fetchHomework } from "@/lib/data";
-import { getHomeworks, createHomework } from "@/lib/homeworks";
+import { getHomeworks, createHomework, getHomeworksByTitle } from "@/lib/homeworks";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const title = request.nextUrl.searchParams.get("title");
 
-    const homeworks = title ? await fetchHomework(title) : await getHomeworks();
+    const homeworks = title ? await getHomeworksByTitle(title) : await getHomeworks();
 
     return Response.json(homeworks);
 }
