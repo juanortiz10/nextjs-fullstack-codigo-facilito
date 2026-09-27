@@ -1,4 +1,5 @@
-import { createHomework, fetchHomework, getHomeworks } from "@/lib/data";
+import { fetchHomework } from "@/lib/data";
+import { getHomeworks, createHomework } from "@/lib/homeworks";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest } from "next/server";
 
